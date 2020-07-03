@@ -24,5 +24,5 @@
     -->
 
     <!-- 第三种方式：使用工厂中的静态方法创建对象（使用某个类中的静态方法创建方法并存入spring容器）-->
-    <bean id="accountService" class="com.yoyling.factory.staticFactory"></bean>
+    <bean id="accountService" class="com.yoyling.factory.StaticFactory"></bean>
 </beans>
