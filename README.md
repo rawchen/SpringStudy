@@ -56,7 +56,34 @@ ApplicationContext的三个常用实现类
         <bean id="accountService" class="com.yoyling.service.impl.AccountServiceImpl"></bean>
         ```
     * 第二种方式：使用普通工厂中的方法创建对象(使用某个类中的方法创建对象，并存入spring容器)
-        - <bean id="instanceFactory" class="com.yoyling.factory.InstanceFactory"></bean>
-        - <bean id="accountService" factory-bean="instanceFactory" factory-method="getAccountService"></bean>
+        ```Java
+        <bean id="instanceFactory" class="com.yoyling.factory.InstanceFactory"></bean>
+        <bean id="accountService" factory-bean="instanceFactory" factory-method="getAccountService"></bean>
+        ```
+    * 第三种方式：使用工厂中的静态方法创建对象（使用某个类中的静态方法创建方法并存入spring容器）
+        ```Java
+        <bean id="accountService" class="com.yoyling.factory.StaticFactory"></bean>
+        ```
 2. bean对象作用范围
+    * bean标签的scope属性：
+        - 作用：用于指定bean的作用范围
+        - 取值：常用单例和多例
+            * singleton 单例的（默认值）
+            * prototype 多例的
+            * request 作用于web应用的请求范围
+            * session 作用于web应用的绘画范围
+            * global-session 作用于集群环境的会话范围（全局会话范围），当不是集群环境时，就是session
+                ```Java
+                <bean id="accountService" class="com.yoyling.service.impl.AccountServiceImpl" scope="prototype"></bean>
+                ```
 3. bean对象的生命周期
+    * 单例对象-和容器相同（立即）
+        - 出生：当容器创建时对象出生
+        - 活着：只要容器还在，对象一直活
+        - 死亡：容器销毁，对象销毁
+    * 多例对象（延迟）
+        - 出生：当我们使用对象时，spring框架为我们创建
+        - 活着：对象只要在使用过程中就一直活着
+        - 死亡：当对象长时间不用，且没有别的对象引用时，由Java垃圾回收器回收
+## 05DI
+    Dependency Injection
