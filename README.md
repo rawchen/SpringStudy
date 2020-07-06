@@ -86,14 +86,14 @@ ApplicationContext的三个常用实现类
         - 活着：对象只要在使用过程中就一直活着
         - 死亡：当对象长时间不用，且没有别的对象引用时，由Java垃圾回收器回收
 ## 05DI
-    * 依赖注入：
+    ## 依赖注入：
         - Dependency Injection
-    * IOC的作用：
+    ## IOC的作用：
         - 降级程序间的耦合（依赖关系）
-    * 依赖关系的管理：
+    ## 依赖关系的管理：
         - 以后都交给了spring来维护
     在当前类中需要用到其它类的对象，由spring为我们提供，我们只需要在配置文件中说明
-    * 依赖关系的维护：
+    ## 依赖关系的维护：
         - 就称之为依赖注入。
     依赖注入：
         - 能注入的数据有三类：
@@ -104,7 +104,7 @@ ApplicationContext的三个常用实现类
             - 第一种：使用构造函数提供
             - 第二种：使用set方法
             - 第三种：使用注解提供
-    * 构造函数注入：
+    ## 构造函数注入：
         - 使用constructor-arg
         - 便签出现的位置：bean标签的内部
         - 标签中的属性：
@@ -128,7 +128,7 @@ ApplicationContext的三个常用实现类
             <!-- 配置一个日期对象 -->
             <bean id="now" class="java.util.Date"></bean>
             ```
-    * set方法注入（更常用）
+    ## set方法注入（更常用）
         - 涉及的标签：property
         - 出现的位置：bean标签的内部
         - 标签的属性：
@@ -146,7 +146,7 @@ ApplicationContext的三个常用实现类
                 <property name="birthday" ref="now"></property>
             </bean>
             ```
-    * 复杂类型的注入/集合类型的注入
+    ## 复杂类型的注入/集合类型的注入
         - 用于给List结构集合注入的标签有：
             - List Array Set
         - 用于给Map结构集合注入的标签有：
