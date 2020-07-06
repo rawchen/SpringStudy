@@ -67,7 +67,15 @@
         <property name="birthday" ref="now"></property>
     </bean>
 
-    <!-- 复杂类型的注入/集合类型的注入 -->
+    <!-- 复杂类型的注入/集合类型的注入
+        用于给List结构集合注入的标签有：
+            List Array Set
+        用于给Map结构集合注入的标签有：
+            Map Props
+        结构相同标签可以互换
+
+    -->
+
     <bean id="accountService3" class="com.yoyling.service.impl.AccountServiceImpl3">
         <property name="myStrs">
             <array>
@@ -100,6 +108,13 @@
                     <value>BBBMap</value>
                 </entry>
             </map>
+        </property>
+
+        <property name="myProps">
+            <props>
+                <prop key="textC">CCCProps</prop>
+                <prop key="textD">DDDProps</prop>
+            </props>
         </property>
 
 

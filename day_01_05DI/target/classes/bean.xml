@@ -101,6 +101,15 @@
                 </entry>
             </map>
         </property>
+
+        <property name="myProps">
+            <props>
+                <prop key="textC">CCCProps</prop>
+                <prop key="textD">DDDProps</prop>
+            </props>
+        </property>
+
+
     </bean>
 
 
