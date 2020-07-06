@@ -205,7 +205,7 @@
   - Map Props
 * 结构相同标签可以互换
 
-````Java
+```Java
 <bean id="accountService3" class="com.yoyling.service.impl.AccountServiceImpl3">
     <property name="myStrs">
         <array>
