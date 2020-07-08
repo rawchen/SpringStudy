@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
  *     它们的作用就和在XML配置文件中编写一个<bean>标签实现的功能是一样的
  *     @Component:
  *         作用：用于把当前类存入spring容器中
+ *         属性：value 用于指定bean的id，不写时，默认值为当前类名，且首字母改小写。
+ *
  * 用于注入数据的注解
  *     它们的作用就和在XML配置文件中的<bean>标签中写一个<property>标签的作用是一样的
  * 用于改变作用范围的
