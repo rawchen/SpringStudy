@@ -2,7 +2,7 @@
 
 学习Spring框架的学习记录
 
-## 03spring
+## 02-03spring
 
 把对象的创建交给spring来管理
 
@@ -27,6 +27,7 @@
    IAccountService as = (IAccountService)beanFactory.getBean("accountService");
 
 * ApplicationContext的三个常用实现类
+
   - ClassPathXmlApplicationContext  可以加载类路径下的配置文件
   - FileSystemXmlApplicationContext  可以加载磁盘任意路径下的配置文件(必须有访问权限)
   - AnnotationConfigApplicationContext  它是用于读取注解创建容器的
@@ -42,7 +43,7 @@
     它在构建核心容器时，创建对象采取的策略是延迟加载的方式，什么时候根据id获取对象了，什么时候才真正创建了对象。
            
 
-## 04bean
+## 02-04bean
 
 ### spring对bean的管理细节
 
@@ -103,7 +104,7 @@
      - 活着：对象只要在使用过程中就一直活着
      - 死亡：当对象长时间不用，且没有别的对象引用时，由Java垃圾回收器回收
 
-## 05DI
+## 02-05DI
 
 ### 依赖注入：
 
@@ -248,3 +249,56 @@
     </property>
 </bean>
 ```
+
+## 02-01anno_IoC
+
+* 曾经XML配置：
+
+  ```xml
+  <bean id="accountService" class="com.yoyling.service.impl.AccountServiceImpl"
+      scope="" init-method="" destroy-method="" >
+      <property name="" value="" | ref=""></property>
+  </bean>
+  ```
+
+### 用于创建对象的注解
+
+* 它们的作用就和在XML配置文件中编写一个<bean>标签实现的功能是一样的
+*  @Component
+  * 作用：用于把当前类存入spring容器中
+  * 属性：value 用于指定bean的id，不写时，默认值为当前类名，且首字母改小写。
+
+### 用于注入数据的注解
+
+* 它们的作用就和在XML配置文件中的<bean>标签中写一个<property>标签的作用是一样的
+
+### 用于改变作用范围的
+
+* 它们的作用就和在<bean>标签中使用scope属性实现的功能是一样的
+
+### 和生命周期相关
+
+* 它们的作用就和在<bean>标签中使用init-method、destroy-method是一样的
+
+  
+
+------
+
+### bean.xml
+
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 告知spring在创建容器时要扫描的包，配置所需的标签不是在beans这个约束中而是一个名称为context名称空间和约束中-->
+    
+    <context:component-scan base-package="com.yoyling"></context:component-scan>
+</beans>
+```
+
+## 02-01anno_IoC
