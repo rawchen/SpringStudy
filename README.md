@@ -305,6 +305,17 @@
   * 作用：在按照类中注入的基础之上再按照名称注入。它在给类成员注入时不能单独使用。但是在给方法参数注入时可以
   * 属性：
     * value：用于指定注入bean的id。
+* @Resource:
+  *  作用：直接按照bean的id注入，它可以独立使用
+  *  属性：
+     * name：用于指定bean的id
+  * 以上三个注解都只能注入其他bean类型的数据，而基本类型和String类型无法使用上述注解实现。
+  * 另外集合类型的注入只能通过XML来实现。
+* @Value：
+  * 作用：用于注入基本类型和String类型的数据
+  * 属性：
+    * value：用于指定数据的值，它可以用spring中SpEL(Spring的el表达式)
+          * SpEL的写法：${表达式}
 
 ### 用于改变作用范围的
 
@@ -340,4 +351,4 @@
 
 IAccountService as = (IAccountService)ac.getBean("accountService");
 ```
-###新标题
+
