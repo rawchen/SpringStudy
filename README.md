@@ -309,21 +309,33 @@
   *  作用：直接按照bean的id注入，它可以独立使用
   *  属性：
      * name：用于指定bean的id
-  * 以上三个注解都只能注入其他bean类型的数据，而基本类型和String类型无法使用上述注解实现。
-  * 另外集合类型的注入只能通过XML来实现。
+  *  以上三个注解都只能注入其他bean类型的数据，而基本类型和String类型无法使用上述注解实现。
+  *  另外集合类型的注入只能通过XML来实现。
 * @Value：
   * 作用：用于注入基本类型和String类型的数据
   * 属性：
     * value：用于指定数据的值，它可以用spring中SpEL(Spring的el表达式)
-          * SpEL的写法：${表达式}
+         * SpEL的写法：${表达式}
 
 ### 用于改变作用范围的
 
 * 它们的作用就和在<bean>标签中使用scope属性实现的功能是一样的
+* @Scope
+  * 作用：用于指定bean的作用范围
+  * 属性：
+    * value：指定范围的取值。常用取值singleton  prototype
 
-### 和生命周期相关
+### 和生命周期相关(了解)
 
 * 它们的作用就和在<bean>标签中使用init-method、destroy-method是一样的
+
+* @PreDestroy
+
+  * 作用：用于指定销毁方法
+
+* @PostCoustruct
+
+  * 用于指定初始化方法
 
   
 
@@ -351,4 +363,3 @@
 
 IAccountService as = (IAccountService)ac.getBean("accountService");
 ```
-
