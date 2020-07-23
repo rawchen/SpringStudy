@@ -1,6 +1,7 @@
 package com.yoyling.service.impl;
 
 import com.yoyling.dao.AccountDao;
+import com.yoyling.dao.impl.AccountDaoImpl;
 import com.yoyling.domain.Account;
 import com.yoyling.service.AccountService;
 
@@ -35,5 +36,8 @@ public class AccountServiceImpl implements AccountService {
 
     public void deleteAccount(Integer accountId) {
         dao.deleteAccount(accountId);
+    }
+
+    public void setAccountDao(AccountDaoImpl accountDao) {
     }
 }

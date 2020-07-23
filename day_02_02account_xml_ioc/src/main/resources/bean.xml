@@ -5,5 +5,15 @@
     <!-- 配置Service -->
     <bean id="accountService" class="com.yoyling.service.impl.AccountServiceImpl">
         <!-- 注入的是dao -->
+        <property name="accountDao" ref="accountDao"></property>
     </bean>
+
+    <!-- 配置Dao对象 -->
+    <bean id="accountDao" class="com.yoyling.dao.impl.AccountDaoImpl">
+        <!-- 注入QueryRunner -->
+        <property name="queryRunner" ref="queryRunner"></property>
+    </bean>
+
+    <!-- 注入QueryRunner -->
+    <bean id="queryRunner" class="org.apache.commons.dbutils.QueryRunner"></bean>
 </beans>
