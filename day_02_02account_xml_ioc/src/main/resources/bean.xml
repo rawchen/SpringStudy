@@ -12,6 +12,7 @@
     <bean id="accountDao" class="com.yoyling.dao.impl.AccountDaoImpl">
         <!-- 注入QueryRunner -->
         <property name="queryRunner" ref="queryRunner"></property>
+        <property name="" ref=""></property>
     </bean>
 
     <!-- 注入QueryRunner -->
