@@ -29,7 +29,7 @@ public class AccountDaoImpl implements AccountDao {
 
     public Account findAccountById(Integer accountId) {
         try {
-            return queryRunner.query("select * from account where id = ?",new BeanHandler<Account>(Account.class));
+            return queryRunner.query("select * from account where id = ?",new BeanHandler<Account>(Account.class),accountId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

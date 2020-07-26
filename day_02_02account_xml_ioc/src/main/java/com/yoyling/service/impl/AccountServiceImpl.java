@@ -12,30 +12,30 @@ import java.util.List;
  */
 public class AccountServiceImpl implements AccountService {
 
-    private AccountDao dao;
+    private AccountDao accountDao;
 
-    public void setDao(AccountDao dao) {
-        this.dao = dao;
+    public void setAccountDao(AccountDao accountDao) {
+        this.accountDao = accountDao;
     }
 
     public List<Account> findAllAccount() {
-        return dao.findAllAccount();
+        return accountDao.findAllAccount();
     }
 
     public Account findAccountById(Integer accountId) {
-        return dao.findAccountById(accountId);
+        return accountDao.findAccountById(accountId);
     }
 
     public void saveAccount(Account account) {
-        dao.saveAccount(account);
+        accountDao.saveAccount(account);
     }
 
     public void updateAccount(Account account) {
-        dao.updateAccount(account);
+        accountDao.updateAccount(account);
     }
 
     public void deleteAccount(Integer accountId) {
-        dao.deleteAccount(accountId);
+        accountDao.deleteAccount(accountId);
     }
 
     public void setAccountDao(AccountDaoImpl accountDao) {
