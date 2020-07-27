@@ -37,10 +37,21 @@ public class AccountServiceTest {
 
     @Test
     public void testSave() {
+        Account account = new Account();
+        account.setName("test");
+        account.setMoney(12345f);
+        ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
+        AccountService as = ac.getBean("accountService",AccountService.class);
+        as.saveAccount(account);
     }
 
     @Test
     public void testUpdate() {
+        ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
+        AccountService as = ac.getBean("accountService",AccountService.class);
+        Account account = as.findAccountById(4);
+        account.setMoney(23456f);
+        as.updateAccount(account);
     }
 
     @Test
