@@ -56,5 +56,8 @@ public class AccountServiceTest {
 
     @Test
     public void testDelete() {
+        ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
+        AccountService as = ac.getBean("accountService",AccountService.class);
+        as.deleteAccount(4);
     }
 }

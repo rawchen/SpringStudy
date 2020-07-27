@@ -45,7 +45,7 @@ public class AccountDaoImpl implements AccountDao {
 
     public void updateAccount(Account account) {
         try {
-            queryRunner.update("update into account set name = ?,money = ? where id = ?",account.getName(),account.getMoney(),account.getId());
+            queryRunner.update("update account set name = ?,money = ? where id = ?",account.getName(),account.getMoney(),account.getId());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
