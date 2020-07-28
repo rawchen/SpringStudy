@@ -2,7 +2,7 @@
 
 学习Spring框架的学习记录
 
-## 02-03spring
+## 01-03spring
 
 把对象的创建交给spring来管理
 
@@ -43,7 +43,7 @@
     它在构建核心容器时，创建对象采取的策略是延迟加载的方式，什么时候根据id获取对象了，什么时候才真正创建了对象。
            
 
-## 02-04bean
+## 01-04bean
 
 ### spring对bean的管理细节
 
@@ -104,7 +104,7 @@
      - 活着：对象只要在使用过程中就一直活着
      - 死亡：当对象长时间不用，且没有别的对象引用时，由Java垃圾回收器回收
 
-## 02-05DI
+## 01-05DI
 
 ### 依赖注入：
 
@@ -315,7 +315,7 @@
   * 作用：用于注入基本类型和String类型的数据
   * 属性：
     * value：用于指定数据的值，它可以用spring中SpEL(Spring的el表达式)
-         * SpEL的写法：${表达式}
+      * SpEL的写法：${表达式}
 
 ### 用于改变作用范围的
 
@@ -363,4 +363,81 @@
 
 IAccountService as = (IAccountService)ac.getBean("accountService");
 ```
-#行标题
+
+## 02-02/03 xml_ioc/anno_ioc
+
+基于xml的配置代码、基于set与构造方法注入相关代码注释均在：
+
+[day_02_02account_xml_ioc](https://github.com/yoyling/SpringStudy/tree/master/day_02_02account_xml_ioc)
+
+[day_02_03account_anno_ioc](https://github.com/yoyling/SpringStudy/tree/master/day_02_03account_anno_ioc)
+
+由于无法对jar包中的类实现注解，因此采用SpringConfiguration配置类来实现无xml，下面将介绍怎么使用配置类
+
+## 02_04annoioc_withoutxml
+
+```Java
+package com.yoyling.config;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.apache.commons.dbutils.QueryRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
+import java.beans.PropertyVetoException;
+
+/**
+ * 该类为一个配置类，它的作用和bean.xml是一样的
+ * spring中的新注解
+ * Configuaration
+ *     作用：指定当前类为一个配置类
+ * ComponentScan
+ *     作用：用于通过注解指定spring在创建容器时要扫描的包
+ *     属性：
+ *         value：它和basePackages的作用是一样的，都是用于指定创建容器时要扫描的包。
+ *             我们使用此注解等同于在xml中配置了
+ *             <context:component-scan base-package="com.yoyling"></context:component-scan>
+ * Bean
+ *     作用：用于把当前方法的返回值作为bean对象存入spring的ioc容器中
+ *     属性：
+ *         name:用于指定bean的id，不写时默认值是当前方法的名称
+ *     细节：
+ *         当我们使用注解配置方法时，如果方法有参数，spring框架会去容器中查找有没有可用的bean对象。
+ *         查找方式和Autowired注解的作用是一样的，
+ */
+@Configuration
+@ComponentScan("com.yoyling")
+public class SpringConfiguration {
+
+    /**
+     * 用于创建一个QueryRunner对象
+     * @param dataSource
+     * @return
+     */
+    @Bean(name = "queryRunner")
+    public QueryRunner createQueryRunner(DataSource dataSource) {
+        return new QueryRunner(dataSource);
+    }
+
+    /**
+     * 创建数据源对象
+     * @return
+     */
+    @Bean(name = "dataSource")
+    public DataSource createDataSource() {
+        try {
+            ComboPooledDataSource ds = new ComboPooledDataSource();
+            ds.setDriverClass("com.mysql.jdbc.Driver");
+            ds.setJdbcUrl("jdbc:mysql://localhost:3306/springtest");
+            ds.setUser("root");
+            ds.setPassword("root");
+            return ds;
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
+```
