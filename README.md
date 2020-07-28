@@ -441,3 +441,8 @@ public class SpringConfiguration {
     }
 }
 ```
+现在就可以在Junit单元测试中注释掉ClassPathXmlApplicationContext配置的xml文件的代码了
+```Java
+//ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
+  ApplicationContext ac = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+```
