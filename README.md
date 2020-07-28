@@ -460,3 +460,8 @@ public QueryRunner createQueryRunner(DataSource dataSource) {
     return new QueryRunner(dataSource);
 }
 ```
+
+如果想把**SpringConfiguration**里面的配置拿出来拆分一个**JdbcConfig**，则就需要确定**SpringConfiguration**为主配置文件，加**@Configuration**注解，再加上**@Import(JdbcConfig.class)**注解。
+
+这样就不用对测试类中AnnotationConfigApplicationContext()加入两个反射class，也不用对@ComponentScan多添加一个扫描路径
+
