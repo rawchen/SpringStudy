@@ -405,7 +405,7 @@ import java.beans.PropertyVetoException;
  *         name:用于指定bean的id，不写时默认值是当前方法的名称
  *     细节：
  *         当我们使用注解配置方法时，如果方法有参数，spring框架会去容器中查找有没有可用的bean对象。
- *         查找方式和Autowired注解的作用是一样的，
+ *         查找方式和Autowired注解的作用是一样的
  */
 @Configuration
 @ComponentScan("com.yoyling")
@@ -441,8 +441,22 @@ public class SpringConfiguration {
     }
 }
 ```
+
 现在就可以在Junit单元测试中注释掉ClassPathXmlApplicationContext配置的xml文件的代码了
+
 ```Java
 //ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
   ApplicationContext ac = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+```
+
+
+
+现在的QueryRunner对象是单例的，给它一个Scope注解就是多例对象了
+
+```Java
+@Scope("prototype")
+@Bean(name = "queryRunner")
+public QueryRunner createQueryRunner(DataSource dataSource) {
+    return new QueryRunner(dataSource);
+}
 ```
