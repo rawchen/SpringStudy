@@ -406,6 +406,18 @@ import java.beans.PropertyVetoException;
  *     细节：
  *         当我们使用注解配置方法时，如果方法有参数，spring框架会去容器中查找有没有可用的bean对象。
  *         查找方式和Autowired注解的作用是一样的
+ * Import
+ *     作用：用于导入其它配置类
+ *     属性：
+ *         value：用于指定其他配置类的字节码
+ *         当我们使用Import注解后，有Import注解的类就是父配置类，而导入的都是子配置类
+ * PropertySource
+ *     作用：用于指定properties文件的位置
+ *     属性：
+ *         value：指定文件的名称和路径
+ *              关键字：classpath：表示类路径下
+ * 注解和xml如何选择？没有选择权利下以公司为准。
+ * 实际开发中哪种更方便用哪种配置，如果存在jar包中的类用xml更直接更省事。自己写的类注解更方便。
  */
 @Configuration
 @ComponentScan("com.yoyling")
@@ -463,4 +475,53 @@ public QueryRunner createQueryRunner(DataSource dataSource) {
 
 如果想把**SpringConfiguration**里面的QueryRunner和DataSource配置拿出来拆分一个**JdbcConfig**，则就需要确定**SpringConfiguration**为主配置类，加**@Configuration**注解，再加上**@Import(JdbcConfig.class)**注解。
 
-这样就不用对测试类中AnnotationConfigApplicationContext()加入两个反射class，也不用对@ComponentScan数组多添加一个扫描路径
+这样就不用对测试类中AnnotationConfigApplicationContext()加入两个反射class，也不用对@ComponentScan数组多添加一个扫描路径。
+
+**把jdbc配置放到properties文件中，这样就脱离了class文件。**
+
+```Java
+@Value("${jdbc.driver}")
+private String driver;
+
+@Value("${jdbc.url}")
+private String url;
+
+@Value("${jdbc.username}")
+private String username;
+
+@Value("${jdbc.password}")
+private String password;
+
+/**
+ * 创建数据源对象
+ * @return
+ */
+@Bean(name = "dataSource")
+public DataSource createDataSource() {
+    try {
+        ComboPooledDataSource ds = new ComboPooledDataSource();
+        ds.setDriverClass(driver);
+        ds.setJdbcUrl(url);
+        ds.setUser(username);
+        ds.setPassword(password);
+        return ds;
+    } catch (PropertyVetoException e) {
+        e.printStackTrace();
+        return null;
+    }
+
+}
+```
+
+jdbcConfig.properties
+
+```properties
+jdbc.driver=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/springtest
+jdbc.username=root
+jdbc.password=root
+```
+
+```
+注解和xml如何选择？没有选择权利下以公司为准，实际开发中哪种更方便用哪种配置，如果存在jar包中的类用xml更直接更省事。自己写的类注解更方便。
+```
