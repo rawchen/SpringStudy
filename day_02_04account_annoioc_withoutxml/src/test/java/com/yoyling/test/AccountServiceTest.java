@@ -1,10 +1,12 @@
 package com.yoyling.test;
 
+import com.yoyling.config.SpringConfiguration;
 import com.yoyling.domain.Account;
 import com.yoyling.service.AccountService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
@@ -25,15 +27,19 @@ import java.util.List;
  *      当测试方法执行时，没有ioc容器，就算写了Autowired注解，也无法实现注入
  *  -----------------------------------------
  *  Spring整合了junit的配置
- *      1.d导入spring整合junit的jar（坐标）
+ *      1.导入spring整合junit的jar（坐标）
  *      2.使用Junit提供的一个注解把原来的main方法替换了，替换为spring提供的
  *          @Runwith
- *      3.
+ *      3.告知spring的运行器，spring和ioc创建是基于xml还是注解的，并说明位置
+ *          @ContextConfiguration
+ *                  locations:指定xml文件的位置+classpath关键字，表示在类路径下
+ *                  classes:指定注解类所在的位置
  *
- *
+ *      当我们使用spring5.x的b版本的时候，要求junite的jar必须是4.12及以上
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = SpringConfiguration.class)
 public class AccountServiceTest {
 
 //    private ApplicationContext ac;
