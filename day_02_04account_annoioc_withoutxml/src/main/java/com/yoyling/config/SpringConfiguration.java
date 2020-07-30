@@ -33,7 +33,7 @@ import org.springframework.context.annotation.PropertySource;
  *     属性：
  *         value：指定文件的名称和路径
  *              关键字：classpath：表示类路径下
- *
+ * 注解和xml如何选择？没有选择权利下以公司为准，实际开发中哪种更方便用哪种配置，如果存在jar包中的类用xml更直接更省事。自己写的类注解更方便。
  */
 //@Configuration
 @ComponentScan("com.yoyling")

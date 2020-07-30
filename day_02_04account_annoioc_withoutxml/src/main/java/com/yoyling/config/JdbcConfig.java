@@ -2,6 +2,7 @@ package com.yoyling.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.apache.commons.dbutils.QueryRunner;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
@@ -35,7 +36,7 @@ public class JdbcConfig {
      */
     @Scope("prototype")
     @Bean(name = "queryRunner")
-    public QueryRunner createQueryRunner(DataSource dataSource) {
+    public QueryRunner createQueryRunner(@Qualifier("ds2") DataSource dataSource) {
         return new QueryRunner(dataSource);
     }
 
@@ -43,7 +44,7 @@ public class JdbcConfig {
      * 创建数据源对象
      * @return
      */
-    @Bean(name = "dataSource")
+    @Bean(name = "ds2")
     public DataSource createDataSource() {
         try {
             ComboPooledDataSource ds = new ComboPooledDataSource();
@@ -56,6 +57,20 @@ public class JdbcConfig {
             e.printStackTrace();
             return null;
         }
+    }
 
+    @Bean(name = "ds1")
+    public DataSource createDataSource1() {
+        try {
+            ComboPooledDataSource ds = new ComboPooledDataSource();
+            ds.setDriverClass(driver);
+            ds.setJdbcUrl("jdbc:mysql://localhost:3306/springtest02");
+            ds.setUser(username);
+            ds.setPassword(password);
+            return ds;
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
