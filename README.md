@@ -6,56 +6,80 @@
 
 **（1）spring框架的概述以及spring中基于XML的IOC配置**
 
-1、spring的概述
-	spring是什么
-	spring的两大核心
-	spring的发展历程和优势
-	spring体系结构
-2、程序的耦合及解耦
-	曾经案例中问题
-	工厂模式解耦
-3、IOC概念和spring中的IOC
-	spring中基于XML的IOC环境搭建
-4、依赖注入（Dependency Injection）
+1. spring的概述
+
+   spring是什么
+
+   spring的两大核心
+
+   spring的发展历程和优势
+
+   spring体系结构
+
+2. 程序的耦合及解耦
+
+   曾经案例中问题
+
+   工厂模式解耦
+
+3. IOC概念和spring中的IOC
+
+   spring中基于XML的IOC环境搭建
+
+4. 依赖注入（Dependency Injection）
 
 ---------------------------------------------------------------
 
 **（2）spring中基于注解的IOC和ioc的案例**
 
-1、spring中ioc的常用注解
-2、案例使用xml方式和注解方式实现单表的CRUD操作
-	持久层技术选择：dbutils
-3、改造基于注解的ioc案例，使用纯注解的方式实现
-	spring的一些新注解使用
-4、spring和Junit整合
+1. spring中ioc的常用注解
+
+2. 案例使用xml方式和注解方式实现单表的CRUD操作
+
+   持久层技术选择：dbutils
+
+3. 改造基于注解的ioc案例，使用纯注解的方式实现
+
+   spring的一些新注解使用
+
+4. spring和Junit整合
 
 --------------------------------------------------------
 
 **（3）spring中的aop和基于XML以及注解的AOP配置**
 
-1、完善我们的account案例
-2、分析案例中问题
-3、回顾之前讲过的一个技术：动态代理
-4、动态代理另一种实现方式
-5、解决案例中的问题
-6、AOP的概念
-7、spring中的AOP相关术语
-8、spring中基于XML和注解的AOP配置
+1. 完善我们的account案例
+2. 分析案例中问题
+3. 回顾之前讲过的一个技术：动态代理
+4. 动态代理另一种实现方式
+5. 解决案例中的问题
+6. AOP的概念
+7. spring中的AOP相关术语
+8. spring中基于XML和注解的AOP配置
 
 --------------------------------
 
 **（4）spring中的JdbcTemlate以及Spring事务控制**
 
-1、spring中的JdbcTemplate
-	JdbcTemplate的作用：
-		它就是用于和数据库交互的，实现对表的CRUD操作
-	如何创建该对象：
-	对象中的常用方法：
-2、作业：
-	spring基于AOP的事务控制
-3、spring中的事务控制
-	基于XML的
-	基于注解的
+1. spring中的JdbcTemplate
+
+   * JdbcTemplate的作用：
+
+     它就是用于和数据库交互的，实现对表的CRUD操作
+
+   * 如何创建该对象：
+
+   * 对象中的常用方法：
+
+2. 作业：
+
+   * spring基于AOP的事务控制
+
+3. spring中的事务控制
+
+   * 基于XML的
+
+   * 基于注解的
 
 -------------------------------------------
 
