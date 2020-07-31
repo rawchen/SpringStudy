@@ -1,6 +1,175 @@
 # SpringStudy
 
-学习Spring框架的学习记录
+### Spring Framework 5 学习记录4阶段
+
+--------------------------------------------------------
+
+**（1）spring框架的概述以及spring中基于XML的IOC配置**
+
+1、spring的概述
+	spring是什么
+	spring的两大核心
+	spring的发展历程和优势
+	spring体系结构
+2、程序的耦合及解耦
+	曾经案例中问题
+	工厂模式解耦
+3、IOC概念和spring中的IOC
+	spring中基于XML的IOC环境搭建
+4、依赖注入（Dependency Injection）
+
+---------------------------------------------------------------
+
+**（2）spring中基于注解的IOC和ioc的案例**
+
+1、spring中ioc的常用注解
+2、案例使用xml方式和注解方式实现单表的CRUD操作
+	持久层技术选择：dbutils
+3、改造基于注解的ioc案例，使用纯注解的方式实现
+	spring的一些新注解使用
+4、spring和Junit整合
+
+--------------------------------------------------------
+
+**（3）spring中的aop和基于XML以及注解的AOP配置**
+
+1、完善我们的account案例
+2、分析案例中问题
+3、回顾之前讲过的一个技术：动态代理
+4、动态代理另一种实现方式
+5、解决案例中的问题
+6、AOP的概念
+7、spring中的AOP相关术语
+8、spring中基于XML和注解的AOP配置
+
+--------------------------------
+
+**（4）spring中的JdbcTemlate以及Spring事务控制**
+
+1、spring中的JdbcTemplate
+	JdbcTemplate的作用：
+		它就是用于和数据库交互的，实现对表的CRUD操作
+	如何创建该对象：
+	对象中的常用方法：
+2、作业：
+	spring基于AOP的事务控制
+3、spring中的事务控制
+	基于XML的
+	基于注解的
+
+-------------------------------------------
+
+
+
+## 01-01jdbc
+
+**程序的耦合**
+
+* 耦合：程序间的依赖关系
+  包括：
+  * 类之间的依赖
+  * 方法间的依赖
+* 解耦：
+  * 降低程序间的依赖关系
+* 实际开发中：
+  * 应该做到：编译期不依赖，运行时才依赖。
+* 解耦的思路：
+  * 第一步：使用反射来创建对象，而避免使用new关键字。
+  * 第二步：通过读取配置文件来获取要创建的对象全限定类名
+
+```Java
+public static void main(String[] args) throws  Exception{
+    //1.注册驱动
+    //DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+    Class.forName("com.mysql.jdbc.Driver");
+
+    //2.获取连接
+    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/springtest","root","root");
+    //3.获取操作数据库的预处理对象
+    PreparedStatement pstm = conn.prepareStatement("select * from account");
+    //4.执行SQL，得到结果集
+    ResultSet rs = pstm.executeQuery();
+    //5.遍历结果集
+    while(rs.next()){
+        System.out.println(rs.getString("name"));
+    }
+    //6.释放资源
+    rs.close();
+    pstm.close();
+    conn.close();
+}
+```
+
+
+
+## 01-02factory
+
+一个创建Bean对象的工厂
+**Bean**：在计算机英语中，有可重用组件的含义。
+**JavaBean**：用java语言编写的可重用组件。
+     javabean >  实体类
+它就是创建我们的service和dao对象的。
+
+* 第一个：需要一个配置文件来配置我们的service和dao
+  * 配置的内容：唯一标识=全限定类名（key=value)
+* 第二个：通过读取配置文件中配置的内容，反射创建对象
+  * 我的配置文件可以是xml也可以是properties
+
+```Java
+public class BeanFactory {
+    //定义一个Properties对象
+    private static Properties props;
+
+    //定义一个Map,用于存放我们要创建的对象。我们把它称之为容器
+    private static Map<String,Object> beans;
+
+    //使用静态代码块为Properties对象赋值
+    static {
+        try {
+            //实例化对象
+            props = new Properties();
+            //获取properties文件的流对象
+            InputStream in = BeanFactory.class.getClassLoader().getResourceAsStream("bean.properties");
+            props.load(in);
+            //实例化容器
+            beans = new HashMap<String,Object>();
+            //取出配置文件中所有的Key
+            Enumeration keys = props.keys();
+            //遍历枚举
+            while (keys.hasMoreElements()){
+                //取出每个Key
+                String key = keys.nextElement().toString();
+                //根据key获取value
+                String beanPath = props.getProperty(key);
+                //反射创建对象
+                Object value = Class.forName(beanPath).newInstance();
+                //把key和value存入容器中
+                beans.put(key,value);
+            }
+        }catch(Exception e){
+            throw new ExceptionInInitializerError("初始化properties失败！");
+        }
+    }
+
+    /**
+     * 根据bean的名称获取对象
+     * @param beanName
+     * @return
+     */
+    public static Object getBean(String beanName){
+        return beans.get(beanName);
+    }
+}
+```
+
+**bean.properties**
+
+```properties
+accountService=com.yoyling.service.impl.AccountServiceImpl
+accountDao=com.yoyling.dao.impl.AccountDaoImpl
+```
+
+
 
 ## 01-03spring
 
@@ -103,6 +272,8 @@
      - 出生：当我们使用对象时，spring框架为我们创建
      - 活着：对象只要在使用过程中就一直活着
      - 死亡：当对象长时间不用，且没有别的对象引用时，由Java垃圾回收器回收
+
+
 
 ## 01-05DI
 
@@ -250,6 +421,8 @@
 </bean>
 ```
 
+
+
 ## 02-01anno_IoC
 
 * 曾经XML配置：
@@ -364,6 +537,8 @@
 IAccountService as = (IAccountService)ac.getBean("accountService");
 ```
 
+
+
 ## 02-02/03 xml_ioc/anno_ioc
 
 基于xml的配置代码、基于set与构造方法注入相关代码注释均在：
@@ -373,6 +548,8 @@ IAccountService as = (IAccountService)ac.getBean("accountService");
 [day_02_03account_anno_ioc](https://github.com/yoyling/SpringStudy/tree/master/day_02_03account_anno_ioc)
 
 由于无法对jar包中的类实现注解，因此采用SpringConfiguration配置类来实现无xml，下面将介绍怎么使用配置类
+
+
 
 ## 02_04annoioc_withoutxml
 
@@ -532,29 +709,29 @@ jdbc.password=root
 
 1. 应用程序的入口
 
-   ​	main方法
+   main方法
 
 2. junit单元测试中没有main方法也能执行
 
-   ​	junit集成了一个main方法
+   junit集成了一个main方法
 
-   ​	该方法就会判断当前测试类中那些方法有@Testz注解
+      	该方法就会判断当前测试类中那些方法有@Testz注解
 
-   ​	junit就会让有Test注解的方法执行
+      	junit就会让有Test注解的方法执行
 
 3. junit不会管我们是否采用spring框架
 
-   ​	在执行测试方法时，junit根本不知道我们是不是使用了spring框架
+   在执行测试方法时，junit根本不知道我们是不是使用了spring框架
 
-   ​	所以也就不会为我们读取配置文件/配置类创建sping核心容器
+      	所以也就不会为我们读取配置文件/配置类创建sping核心容器
 
 4. 由以上三点可知
 
-   ​	**当测试方法执行时，没有ioc容器，就算写了Autowired注解，也无法实现注入**
+   **当测试方法执行时，没有ioc容器，就算写了Autowired注解，也无法实现注入**
 
    
 
-   -----------------------------------------
+-----------------------------------------
 
    
 
@@ -564,19 +741,19 @@ jdbc.password=root
 
    2. 使用Junit提供的一个注解把原来的main方法替换了，替换为spring提供的
 
-      ​	@Runwith
+      @Runwith
 
    3. 告知spring的运行器，spring和ioc创建是基于xml还是注解的，并说明位置
 
-      ​	@ContextConfiguration
+      @ContextConfiguration
 
-      ​	locations:指定xml文件的位置+classpath关键字，表示在类路径下
+            	locations:指定xml文件的位置+classpath关键字，表示在类路径下
+          
+            	classes:指定注解类所在的位置
 
-      ​	classes:指定注解类所在的位置
-      
-      
+​      
 
-      ​	**当我们使用spring5.x的b版本的时候，要求junite的jar必须是4.12及以上**
+      	**当我们使用spring5.x的b版本的时候，要求junite的jar必须是4.12及以上**
 
 ```Java
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -647,4 +824,3 @@ public class AccountServiceTest {
     }
 }
 ```
-
