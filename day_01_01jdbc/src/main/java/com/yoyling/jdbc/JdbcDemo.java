@@ -23,7 +23,7 @@ import java.sql.ResultSet;
 public class JdbcDemo {
     public static void main(String[] args) throws  Exception{
         //1.注册驱动
-//        DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+        //DriverManager.registerDriver(new com.mysql.jdbc.Driver());
         Class.forName("com.mysql.jdbc.Driver");
 
         //2.获取连接
