@@ -6,19 +6,20 @@
     <bean id="accountService" class="com.yoyling.service.impl.AccountServiceImpl">
         <!-- 注入dao -->
         <property name="accountDao" ref="accountDao"></property>
+        <!-- 注入事务管理器 -->
+        <property name="transactionManager" ref="transactionManager"></property>
     </bean>
 
     <!-- 配置Dao对象 -->
     <bean id="accountDao" class="com.yoyling.dao.impl.AccountDaoImpl">
         <!-- 注入QueryRunner -->
         <property name="queryRunner" ref="queryRunner"></property>
+        <!-- 注入ConnectionUtils -->
+        <property name="connectionUtils" ref="connectionUtils"></property>
     </bean>
 
     <!-- 配置QueryRunner -->
-    <bean id="queryRunner" class="org.apache.commons.dbutils.QueryRunner" scope="prototype">
-        <!-- 注入数据源 -->
-        <constructor-arg name="ds" ref="dataSource"></constructor-arg>
-    </bean>
+    <bean id="queryRunner" class="org.apache.commons.dbutils.QueryRunner" scope="prototype"></bean>
 
     <!-- 配置数据源 -->
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
@@ -29,5 +30,15 @@
         <property name="password" value="root"></property>
     </bean>
 
+    <!-- 配置Connection的工具类 ConnectionUtils -->
+    <bean id="connectionUtils" class="com.yoyling.utils.ConnectionUtils">
+        <!-- 注入数据源 -->
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
 
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="com.yoyling.utils.TransactionManager">
+        <!-- 注入ConnectionUtils -->
+        <property name="connectionUtils" ref="connectionUtils"></property>
+    </bean>
 </beans>

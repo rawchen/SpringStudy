@@ -3,6 +3,7 @@ package com.yoyling.service.impl;
 import com.yoyling.dao.AccountDao;
 import com.yoyling.domain.Account;
 import com.yoyling.service.AccountService;
+import com.yoyling.utils.TransactionManager;
 
 import java.util.List;
 
@@ -14,6 +15,11 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
 
     private AccountDao accountDao;
+    private TransactionManager transactionManager;
+
+    public void setTransactionManager(TransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
 
     public void setAccountDao(AccountDao accountDao) {
         this.accountDao = accountDao;
@@ -28,7 +34,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public void saveAccount(Account account) {
-        accountDao.saveAccount(account);
+         accountDao.saveAccount(account);
     }
 
     public void updateAccount(Account account) {
@@ -45,13 +51,13 @@ public class AccountServiceImpl implements AccountService {
         //2.根据名称查询转入账户
         Account target = accountDao.findAccountByName(targetName);
         //3.转出账户减钱
-        source.setMoney(source.getMoney()-money);
+        source.setMoney(source.getMoney() - money);
         //4.转入账户加钱
-        target.setMoney(target.getMoney()+money);
+        target.setMoney(target.getMoney() + money);
         //5.更新转出账户
         accountDao.updateAccount(source);
 
-        int i = 1/0;
+        int i = 1 / 0;
 
         //6.更新转入账户
         accountDao.updateAccount(target);
