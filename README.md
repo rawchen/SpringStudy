@@ -1065,9 +1065,27 @@ public class AccountServiceImpl_OLD implements AccountService {
 }
 ```
 
-最后在bean.xml中注入各个类带有set方法的对象到相应的bean中。我们可以发现，servlceImpl中代码冗余了，如果出现其他任意FindAll()、deleteAccount()方法，则要多次写入以上5个事件，且如果事务方法名改变则需要重构所有service层类文件相同的方法。因此下面我们就会使用动态代理来解决，主要有**JDK官方的Proxy**、以及**cglib库**。关于动态代理参考之前文章：[框架底层核心知识点分析总结](https://yoyling.com/code/framework-underlying-core.html)
+
+
+# 03_02proxy
+
+最后在bean.xml中注入各个类带有set方法的对象到相应的bean中。我们可以发现，servlceImpl中代码冗余了，如果出现其他任意FindAll()、deleteAccount()方法，则要多次写入以上5个事件，且如果事务方法名改变则需要重构所有service层类文件相同的方法。
+
+因此下面我们就会使用动态代理来解决对于方法的增强，主要有**JDK官方的Proxy**、以及**cglib库**。
+
+参考之前文章：[框架底层核心知识点分析总结](https://yoyling.com/code/framework-underlying-core.html)
+
+参考最近的文章：[动态代理 | CGlib | AOP](https://yoyling.com/se/DynamicProxy-CGlib-AOP.html)
 
 后面Spring框架为我们提供AOP编程，使用注解简化了以上步骤，Spring框架在使用代理模式时，会根据当前java文件是类或者是接口，然后采用不同的代理方式，在spring4.0以后的版本（自动整合了cglib代理）
+
+**JDK动态代理和CGLIB动态代理区别：**
+
+- JDK动态代理基于接口实现的。也就是说，如果使用JDK动态代理，必须提供接口
+
+CGLIB动态代理基于类实现的。也就是说，只需提供一个类即可，CGLIB会给这个类生成代理对象
+
+
 
 **proxy\Client.java**
 
@@ -1188,7 +1206,9 @@ public class Client {
 }
 ```
 
-cglib 动态代理需要引入坐标
+**在JDK8之前，如果我们在匿名内部类中需要访问局部变量，那么这个局部变量必须用final修饰符修饰。**
+
+cglib 动态代理需要引入坐标：
 
 ```xml
 <dependencies>
