@@ -89,11 +89,11 @@
 
 **程序的耦合**
 
-* 耦合：程序间的依赖关系
+* **耦合**：程序间的依赖关系
   包括：
   * 类之间的依赖
   * 方法间的依赖
-* 解耦：
+* **解耦**：
   * 降低程序间的依赖关系
 * 实际开发中：
   * 应该做到：编译期不依赖，运行时才依赖。
@@ -134,10 +134,10 @@ public static void main(String[] args) throws  Exception{
      javabean >  实体类
 它就是创建我们的service和dao对象的。
 
-* 第一个：需要一个配置文件来配置我们的service和dao
-  * 配置的内容：唯一标识=全限定类名（key=value)
+* 第一个：需要一个配置文件来配置我们的 **service** 和 **dao**
+  * 配置的内容：唯一标识=全限定类名（key = value)
 * 第二个：通过读取配置文件中配置的内容，反射创建对象
-  * 我的配置文件可以是xml也可以是properties
+  * 我的配置文件可以是**xml**也可以是**properties**
 
 ```Java
 public class BeanFactory {
@@ -201,37 +201,43 @@ accountDao=com.yoyling.dao.impl.AccountDaoImpl
 
  1. 获取核心容器对象
 
+    ```Java
     ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
+    ```
 
 2. 根据id获取Bean对象
 
+   ```Java
    IAccountService as = (IAccountService)ac.getBean("accountService");
-
    IAccountDao adao = ac.getBean("accountDao",IAccountDao.class);
+   ```
+
+```
+   
+--------------------BeanFactory-----------------------
+   
+​```Java
+   Resource resource = new ClassPathResource("bean.xml");
+BeanFactory beanFactory = new XmlBeanFactory(resource);
+   IAccountService as = (IAccountService)beanFactory.getBean("accountService");
+```
 
    
 
-   --------------------BeanFactory-----------------------
-
-   Resource resource = new ClassPathResource("bean.xml");
-
-   BeanFactory beanFactory = new XmlBeanFactory(resource);
-
-   IAccountService as = (IAccountService)beanFactory.getBean("accountService");
 
 * ApplicationContext的三个常用实现类
 
-  - ClassPathXmlApplicationContext  可以加载类路径下的配置文件
-  - FileSystemXmlApplicationContext  可以加载磁盘任意路径下的配置文件(必须有访问权限)
-  - AnnotationConfigApplicationContext  它是用于读取注解创建容器的
+  - **ClassPathXmlApplicationContext**  可以加载类路径下的配置文件
+  - **FileSystemXmlApplicationContext**  可以加载磁盘任意路径下的配置文件(必须有访问权限)
+  - **AnnotationConfigApplicationContext**  它是用于读取注解创建容器的
 
 * 核心容器的两个接口引发的出的问题
 
-  * ApplicationContext       单例对象适用      采用此接口
+  * **ApplicationContext**       单例对象适用      采用此接口
 
     它在构建核心容器时，创建对象采取的策略是立即加载的方式，一读取文件马上就创建配置文件中配置的对象。
 
-  * BeanFactory              多例对象适用
+  * **BeanFactory**              多例对象适用
 
     它在构建核心容器时，创建对象采取的策略是延迟加载的方式，什么时候根据id获取对象了，什么时候才真正创建了对象。
            
@@ -242,7 +248,7 @@ accountDao=com.yoyling.dao.impl.AccountDaoImpl
 
 1. 创建bean的三种方式
 
-   - 第一种方式：适用默认构造函数创建。
+   - 第一种方式：**适用默认构造函数创建。**
 
    - 在spring的配置文件中使用bean标签，配以id和class属性之后，且没有其他属性和标签时。
    - 采用的就是默认构造函数创建bean对象，此时如果类中没有默认构造函数，则对象无法创建。
@@ -251,14 +257,14 @@ accountDao=com.yoyling.dao.impl.AccountDaoImpl
    <bean id="accountService" class="com.yoyling.service.impl.AccountServiceImpl"></bean>
    ```
 
-   * 第二种方式：使用普通工厂中的方法创建对象(使用某个类中的方法创建对象，并存入spring容器)
+   * 第二种方式：**使用普通工厂中的方法创建对象** (使用某个类中的方法创建对象，并存入spring容器)
 
      ```Java
      <bean id="instanceFactory" class="com.yoyling.factory.InstanceFactory"></bean>
      <bean id="accountService" factory-bean="instanceFactory" factory-method="getAccountService"></bean>
      ```
 
-   * 第三种方式：使用工厂中的静态方法创建对象（使用某个类中的静态方法创建方法并存入spring容器）
+   * 第三种方式：**使用工厂中的静态方法创建对象**（使用某个类中的静态方法创建方法并存入spring容器）
 
      ```Java
      <bean id="accountService" class="com.yoyling.factory.StaticFactory"></bean>
@@ -266,21 +272,21 @@ accountDao=com.yoyling.dao.impl.AccountDaoImpl
 
 2. bean对象作用范围
 
-   * bean标签的scope属性：
+   * bean标签的**scope**属性：
 
      - 作用：用于指定bean的作用范围
 
      - 取值：常用单例和多例
 
-       * singleton 单例的（默认值）
+       * **singleton** 单例的（默认值）
 
-       * prototype 多例的
+       * **prototype** 多例的
 
-       * request 作用于web应用的请求范围
+       * **request** 作用于web应用的请求范围
 
-       * session 作用于web应用的绘画范围
+       * **session** 作用于web应用的绘画范围
 
-       * global-session 作用于集群环境的会话范围（全局会话范围），当不是集群环境时，就是session
+       * **global-session** 作用于集群环境的会话范围（全局会话范围），当不是集群环境时，就是session
 
          ```Java
          <bean id="accountService" class="com.yoyling.service.impl.AccountServiceImpl" scope="prototype"></bean>
@@ -333,18 +339,18 @@ accountDao=com.yoyling.dao.impl.AccountDaoImpl
 
 ### 构造函数注入：
 
-* 使用constructor-arg
+* 使用**constructor-arg**
 
 * 便签出现的位置：bean标签的内部
 
 * 标签中的属性：
 
-  - type：用于指定要注入的数据的数据类型，也是构造函数中某些参数的类型
-  - index：用指定要注入的数据给构造函数中的指定索引位置的参数赋值，索引从0开始
-  - name：用于指定给构造函数中指定名称的参数赋值  （常用的）
+  - **type**：用于指定要注入的数据的数据类型，也是构造函数中某些参数的类型
+  - **index**：用指定要注入的数据给构造函数中的指定索引位置的参数赋值，索引从0开始
+  - **name**：用于指定给构造函数中指定名称的参数赋值  （常用的）
   - ==================以上三个用于指定给构造函数中哪个参数赋值=============
-  - value：用于提供基本类型和String类型的数据
-  - ref：用于指定其它的bean类型数据，它指的就是在spring的IOC核心容器中出现过的bean对象 
+  - **value**：用于提供基本类型和String类型的数据
+  - **ref**：用于指定其它的bean类型数据，它指的就是在spring的IOC核心容器中出现过的bean对象 
 
 * 优势：
 
@@ -367,15 +373,15 @@ accountDao=com.yoyling.dao.impl.AccountDaoImpl
 
 ### set方法注入（更常用）
 
-* 涉及的标签：property
+* 涉及的标签：**property**
 
 * 出现的位置：bean标签的内部
 
 * 标签的属性：
 
-  - name：用于指定注入时所调用的set名称
-  - value：用于提供基本类型和String类型的数据
-  - ref：用于指定其它的bean类型数据，它指的就是在spring的IOC核心容器中出现过的bean对象
+  - **name**：用于指定注入时所调用的set名称
+  - **value**：用于提供基本类型和String类型的数据
+  - **ref**：用于指定其它的bean类型数据，它指的就是在spring的IOC核心容器中出现过的bean对象
 
 * 优势：
 
@@ -396,9 +402,9 @@ accountDao=com.yoyling.dao.impl.AccountDaoImpl
 ### 复杂类型的注入/集合类型的注入
 
 * 用于给List结构集合注入的标签有：
-  - List Array Set
+  - **List、Array、Set**
 * 用于给Map结构集合注入的标签有：
-  - Map Props
+  - **Map、Props**
 * 结构相同标签可以互换
 
 ```Java
@@ -460,77 +466,73 @@ accountDao=com.yoyling.dao.impl.AccountDaoImpl
 
 ### 用于创建对象的注解
 
-* 它们的作用就和在XML配置文件中编写一个<bean>标签实现的功能是一样的
+* 它们的作用就和在XML配置文件中编写一个`<bean>`标签实现的功能是一样的
 
-* @Component
-
-  * 作用：用于把当前类存入spring容器中
+* **@Component**
+* 作用：用于把当前类存入spring容器中
   * 属性：value 用于指定bean的id，不写时，默认值为当前类名，且首字母改小写。
 
-* @Controller          ------        一般用在表现层
+* **@Controller**          ------        一般用在表现层
 
-* @Service                ------        一般用在业务层
+* **@Service**                ------        一般用在业务层
 
-* @Repository          ------        一般用于持久层
+* **@Repository**          ------        一般用于持久层
+* 以上三个注解他们的作用和属性与**Component**是一模一样。
 
-  * 以上三个注解他们的作用和属性与Component是一模一样。
-
-  * 他们三个是spring框架为我们提供明确的三层使用的注解，使我们的三层对象更加清晰。
+* 他们三个是spring框架为我们提供明确的三层使用的注解，使我们的三层对象更加清晰。
 
 ### 用于注入数据的注解
 
-* 它们的作用就和在XML配置文件中的<bean>标签中写一个<property>标签的作用是一样的
+* 它们的作用就和在XML配置文件中的`<bean>`标签中写一个`<property>`标签的作用是一样的
 
-* @Autowired:
+* **@Autowired**:
+* 作用：自动按照类型注入，只要容器中有唯一的一个bean对象类型和要注入的变量类型匹配就可以注入成功
 
-  * 作用：自动按照类型注入，只要容器中有唯一的一个bean对象类型和要注入的变量类型匹配就可以注入成功
+  * 如果ioc容器中没有任何bean的类型和要注入的变量类型匹配，则报错。
 
-    * 如果ioc容器中没有任何bean的类型和要注入的变量类型匹配，则报错。
+  * 如果ioc容器中有多个类型匹配时：
 
-    * 如果ioc容器中有多个类型匹配时：
+* 出现位置：
 
-  * 出现位置：
+  * 可以是变量上，也可以是方法上
 
-    * 可以是变量上，也可以是方法上
+* 细节：
 
-  * 细节：
+  * 在使用注解注入时，set方法就不是必须的。
 
-    * 在使用注解注入时，set方法就不是必须的。
-
-* @Qualifier:
-
-  * 作用：在按照类中注入的基础之上再按照名称注入。它在给类成员注入时不能单独使用。但是在给方法参数注入时可以
+* **@Qualifier**:
+* 作用：在按照类中注入的基础之上再按照名称注入。它在给类成员注入时不能单独使用。但是在给方法参数注入时可以
   * 属性：
     * value：用于指定注入bean的id。
-* @Resource:
+* **@Resource**:
   *  作用：直接按照bean的id注入，它可以独立使用
   *  属性：
      * name：用于指定bean的id
   *  以上三个注解都只能注入其他bean类型的数据，而基本类型和String类型无法使用上述注解实现。
   *  另外集合类型的注入只能通过XML来实现。
-* @Value：
+* **@Value**：
   * 作用：用于注入基本类型和String类型的数据
   * 属性：
     * value：用于指定数据的值，它可以用spring中SpEL(Spring的el表达式)
-      * SpEL的写法：${表达式}
+      * **SpEL的写法：${表达式}**
 
 ### 用于改变作用范围的
 
-* 它们的作用就和在<bean>标签中使用scope属性实现的功能是一样的
-* @Scope
+* 它们的作用就和在`<bean>`标签中使用scope属性实现的功能是一样的
+* **@Scope**
   * 作用：用于指定bean的作用范围
   * 属性：
-    * value：指定范围的取值。常用取值singleton  prototype
+    * value：指定范围的取值。常用取值**singleton**  **prototype**
 
 ### 和生命周期相关(了解)
 
-* 它们的作用就和在<bean>标签中使用init-method、destroy-method是一样的
+* 它们的作用就和在`<bean>`标签中使用**init-method**、**destroy-method**是一样的
 
-* @PreDestroy
+* **@PreDestroy**
 
   * 作用：用于指定销毁方法
 
-* @PostCoustruct
+* **@PostCoustruct**
 
   * 用于指定初始化方法
 
@@ -571,7 +573,7 @@ IAccountService as = (IAccountService)ac.getBean("accountService");
 
 [day_02_03account_anno_ioc](https://github.com/yoyling/SpringStudy/tree/master/day_02_03account_anno_ioc)
 
-由于无法对jar包中的类实现注解，因此采用SpringConfiguration配置类来实现无xml，下面将介绍怎么使用配置类
+由于无法对jar包中的类实现注解，因此采用 **SpringConfiguration** 配置类来实现无xml，下面将介绍怎么使用配置类
 
 
 
@@ -591,28 +593,29 @@ import java.beans.PropertyVetoException;
 
 /**
  * 该类为一个配置类，它的作用和bean.xml是一样的
- * spring中的新注解
- * Configuaration
+ * spring中的新注解：
+ *
+ * @Configuaration
  *     作用：指定当前类为一个配置类
- * ComponentScan
+ * @ComponentScan
  *     作用：用于通过注解指定spring在创建容器时要扫描的包
  *     属性：
  *         value：它和basePackages的作用是一样的，都是用于指定创建容器时要扫描的包。
  *             我们使用此注解等同于在xml中配置了
  *             <context:component-scan base-package="com.yoyling"></context:component-scan>
- * Bean
+ * @Bean
  *     作用：用于把当前方法的返回值作为bean对象存入spring的ioc容器中
  *     属性：
  *         name:用于指定bean的id，不写时默认值是当前方法的名称
  *     细节：
  *         当我们使用注解配置方法时，如果方法有参数，spring框架会去容器中查找有没有可用的bean对象。
  *         查找方式和Autowired注解的作用是一样的
- * Import
+ * @Import
  *     作用：用于导入其它配置类
  *     属性：
  *         value：用于指定其他配置类的字节码
  *         当我们使用Import注解后，有Import注解的类就是父配置类，而导入的都是子配置类
- * PropertySource
+ * @PropertySource
  *     作用：用于指定properties文件的位置
  *     属性：
  *         value：指定文件的名称和路径
@@ -655,7 +658,7 @@ public class SpringConfiguration {
 }
 ```
 
-现在就可以在Junit单元测试中注释掉ClassPathXmlApplicationContext配置的xml文件的代码了
+现在就可以在**Junit**单元测试中注释掉**ClassPathXmlApplicationContext**配置的**xml**文件的代码了
 
 ```Java
 //ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
@@ -664,7 +667,7 @@ public class SpringConfiguration {
 
 
 
-现在的QueryRunner对象是单例的，给它一个Scope注解就是多例对象了
+现在的**QueryRunner**对象是单例的，给它一个**Scope**注解就是多例对象了
 
 ```Java
 @Scope("prototype")
@@ -676,7 +679,7 @@ public QueryRunner createQueryRunner(DataSource dataSource) {
 
 如果想把**SpringConfiguration**里面的QueryRunner和DataSource配置拿出来拆分一个**JdbcConfig**，则就需要确定**SpringConfiguration**为主配置类，加**@Configuration**注解，再加上**@Import(JdbcConfig.class)**注解。
 
-这样就不用对测试类中AnnotationConfigApplicationContext()加入两个反射class，也不用对@ComponentScan数组多添加一个扫描路径。
+这样就不用对测试类中**AnnotationConfigApplicationContext()**加入两个反射class，也不用对**@ComponentScan**数组多添加一个扫描路径。
 
 **把jdbc配置放到properties文件中，这样就脱离了class文件。**
 
@@ -714,7 +717,7 @@ public DataSource createDataSource() {
 }
 ```
 
-jdbcConfig.properties
+**jdbcConfig.properties**
 
 ```properties
 jdbc.driver=com.mysql.jdbc.Driver
@@ -723,9 +726,7 @@ jdbc.username=root
 jdbc.password=root
 ```
 
-```
 注解和xml如何选择？没有选择权利下以公司为准，实际开发中哪种更方便用哪种配置，如果存在jar包中的类用xml更直接更省事。自己写的类注解更方便。
-```
 
 ### Spring5整合Junit单元测试
 
@@ -739,7 +740,7 @@ jdbc.password=root
 
    junit集成了一个main方法
 
-     	该方法就会判断当前测试类中那些方法有@Testz注解
+     	该方法就会判断当前测试类中那些方法有**@Test**注解
 
      	junit就会让有Test注解的方法执行
 
@@ -765,19 +766,17 @@ jdbc.password=root
 
    2. 使用Junit提供的一个注解把原来的main方法替换了，替换为spring提供的
 
-      @Runwith
+      **@Runwith**
 
    3. 告知spring的运行器，spring和ioc创建是基于xml还是注解的，并说明位置
 
-      @ContextConfiguration
+      **@ContextConfiguration**
 
-           	locations:指定xml文件的位置+classpath关键字，表示在类路径下
-           
-           	classes:指定注解类所在的位置
+       	locations:指定xml文件的位置+classpath关键字，表示在类路径下
 
-​      
+       	classes:指定注解类所在的位置
 
-      	**当我们使用spring5.x的b版本的时候，要求junite的jar必须是4.12及以上**
+  	**当我们使用spring5.x的b版本的时候，要求junite的jar必须是4.12及以上**
 
 ```Java
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -873,7 +872,330 @@ public void transfer(String sourceName, String targetName, Float money) {
 
 代码看出与数据库交互4次或者获取了4次连接，每个**Connection**都有自己独立的事务。
 
-**ThreadLocal 对象**：
+**ThreadLocal 对象**解决事务一致性的问题：
 
 把**Connection**和当前线程绑定，从而使一个线程中只有一个能控制事务的对象。
 
+编写一个连接工具类，它用于从数据源中获取一个连接，并且实现和线程的绑定。
+
+编写一个事务管理相关工具类，它包含了开启事务、提交事务、回滚事务和释放事务。
+
+**ConnectionUtils.java**
+
+```Java
+package com.yoyling.utils;
+
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+/**
+ * 连接的工具类，它用于从数据源中获取一个连接，并且实现和线程的绑定
+ */
+public class ConnectionUtils {
+
+    private ThreadLocal<Connection> tl = new ThreadLocal<Connection>();
+
+    private DataSource dataSource;
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    /**
+     * 获取当前线程上的连接
+     * @return
+     */
+    public Connection getThreadConnection() {
+        try {
+            //1.先从ThreadLocal上获取
+            Connection conn = tl.get();
+            //2.判断当前线程上是否有连接
+            if (conn == null) {
+                //3.从数据源中获取一个连接，并且存入ThreadLocal中,线程绑定
+                conn = dataSource.getConnection();
+                tl.set(conn);
+            }
+            //4.返回当前线程上的连接
+            return conn;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 把连接和线程解绑
+     */
+    public void removeConnection() {
+        tl.remove();
+    }
+}
+```
+
+
+
+**TransactionManager.java**
+
+```Java
+package com.yoyling.utils;
+
+import java.sql.SQLException;
+
+/**
+ * 和事务管理相关的工具类，它包含了开启事务、提交事务、回滚事务和释放事务
+ */
+public class TransactionManager {
+
+    private ConnectionUtils connectionUtils;
+
+    public void setConnectionUtils(ConnectionUtils connectionUtils) {
+        this.connectionUtils = connectionUtils;
+    }
+
+    /**
+     * 开启事务
+     */
+    public void beginTransaction() {
+        try {
+            connectionUtils.getThreadConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 提交事务
+     */
+    public void commit() {
+        try {
+            connectionUtils.getThreadConnection().commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 回滚事务
+     */
+    public void rollback() {
+        try {
+            connectionUtils.getThreadConnection().rollback();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 释放连接
+     */
+    public void release() {
+        try {
+            connectionUtils.getThreadConnection().close();//还回连接池中
+            connectionUtils.removeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+
+
+**AccountServiceImpl.java**
+
+```Java
+package com.yoyling.service.impl;
+
+import com.yoyling.dao.AccountDao;
+import com.yoyling.domain.Account;
+import com.yoyling.service.AccountService;
+import com.yoyling.utils.TransactionManager;
+
+import java.util.List;
+
+/**
+ * 账户的业务实现类
+ *
+ * 事务控制应该都是在业务层
+ */
+public class AccountServiceImpl_OLD implements AccountService {
+
+    private AccountDao accountDao;
+    private TransactionManager transactionManager;
+
+    public void setTransactionManager(TransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
+
+    public void setAccountDao(AccountDao accountDao) {
+        this.accountDao = accountDao;
+    }
+
+    public void transfer(String sourceName, String targetName, Float money) {
+        try {
+            //1.开启事务
+            transactionManager.beginTransaction();
+            //2.执行操作
+            //2.1根据名称查询转出账户
+            Account source = accountDao.findAccountByName(sourceName);
+            //2.2根据名称查询转入账户
+            Account target = accountDao.findAccountByName(targetName);
+            //2.3转出账户减钱
+            source.setMoney(source.getMoney()-money);
+            //2.4转入账户加钱
+            target.setMoney(target.getMoney()+money);
+            //2.5更新转出账户
+            accountDao.updateAccount(source);
+            int i = 1/0;
+            //2.6更新转入账户
+            accountDao.updateAccount(target);
+            //3.提交事务
+            transactionManager.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //4.回滚操作
+            transactionManager.rollback();
+        }finally {
+            //5.释放连接
+            transactionManager.release();
+        }
+    }
+}
+```
+
+最后在bean.xml中注入各个类带有set方法的对象到相应的bean中。我们可以发现，servlceImpl中代码冗余了，如果出现其他任意FindAll()、deleteAccount()方法，则要多次写入以上5个事件，且如果事务方法名改变则需要重构所有service层类文件相同的方法。因此下面我们就会使用动态代理来解决，主要有**JDK官方的Proxy**、以及**cglib库**。关于动态代理参考之前文章：[框架底层核心知识点分析总结](https://yoyling.com/code/framework-underlying-core.html)
+
+后面Spring框架为我们提供AOP编程，使用注解简化了以上步骤，Spring框架在使用代理模式时，会根据当前java文件是类或者是接口，然后采用不同的代理方式，在spring4.0以后的版本（自动整合了cglib代理）
+
+**proxy\Client.java**
+
+```Java
+public class Client {
+    public static void main(String[] args) {
+        final Producer producer = new Producer();
+
+        /**
+         * 动态代理：
+         * 特点：字节码随用随创建，随用随加载
+         * 作用：不修改源码基础上对方法增强
+         * 分类：
+         *   基于接口的动态代理
+         *   基于子类的动态代理
+         * 基于接口的动态代理：
+         *   涉及的类：Proxy
+         *   提供者：JDK官方
+         * 如何创建代理对象：
+         *   使用Proxy类中的newProxyInstance方法
+         * 创建代理对象的要求：
+         *   被代理类最少实现一个接口，如果没有则不能使用
+         * newProxyInstance方法的参数：
+         *   ClassLoader 类加载器
+         *      用于加载代理对象字节码的，和被代理对象使用相同的类加载器，固定写法。
+         *   Class[] 字节码数组
+         *      让代理对象和被代理对象有相同方法，固定写法。
+         *   InvocationHandler 用于提供增强的代码
+         *      写如何代理，我们一般是写一个接口实现类，通常情况是匿名内部类，但不是必须的
+         *      此接口的实现类都是谁用谁写。
+         *
+         */
+        IProducer proxyProducer = (IProducer) Proxy.newProxyInstance(producer.getClass().getClassLoader(), producer.getClass().getInterfaces(), new InvocationHandler() {
+            /**
+             * 作用：执行被代理对象的任何借口方法都会经过该方法
+             * 方法参数的含义
+             * @param proxy     代理对象的引用
+             * @param method    当前执行的方法
+             * @param args      当前执行方法所需的参数
+             * @return          和被代理对象方法有相同的返回值
+             * @throws Throwable
+             */
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                //提供增强的代码
+                Object returnValue = null;
+                //1.获取方法执行的参数
+                Float money = (Float)args[0];
+                //2.判断当前方法是不是销售
+                if ("saleProduct".equals(method.getName())) {
+                    returnValue = method.invoke(producer,money * 0.8f);
+                }
+                return returnValue;
+            }
+        });
+        proxyProducer.saleProduct(10000f);
+
+    }
+}
+```
+
+
+
+**cglib\Client.java**
+
+```Java
+public class Client {
+    public static void main(String[] args) {
+        final Producer producer = new Producer();
+
+        /**
+         * 动态代理：
+         * 特点：字节码随用随创建，随用随加载
+         * 作用：不修改源码基础上对方法增强
+         * 分类：
+         *   基于接口的动态代理
+         *   基于子类的动态代理
+         * 基于子类的动态代理：
+         *   涉及的类：Enhancer
+         *   提供者：cglib库
+         * 如何创建代理对象：
+         *   使用Enhancer类中的create方法
+         * 创建代理对象的要求：
+         *   被代理类不能是最终类
+         * create方法的参数：
+         *   Class 字节码
+         *      它是用于指定被代理对象的字节码。
+         *   Callback 用于提供增强的代码
+         *      写如何代理，我们一般是写一个接口实现类，通常情况是匿名内部类，但不是必须的
+         *      此接口的实现类都是谁用谁写。
+         *      我们一般写的都是该接口的子接口实现类：MethodInterceptor
+         *
+         */
+        Producer cglibProducer = (Producer) Enhancer.create(producer.getClass(), new MethodInterceptor() {
+            /**
+             * 执行被代理对象的任何方法都会经过该方法
+             * @param proxy
+             * @param method
+             * @param args
+             *     以上三个参数和基于接口的动态代理中invoke方法的参数是一样的
+             * @param methodProxy   当前执行方法的代理对象
+             * @return
+             * @throws Throwable
+             */
+            public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+                //提供增强的代码
+                Object returnValue = null;
+                //1.获取方法执行的参数
+                Float money = (Float)args[0];
+                //2.判断当前方法是不是销售
+                if ("saleProduct".equals(method.getName())) {
+                    returnValue = method.invoke(producer,money * 0.8f);
+                }
+                return returnValue;
+            }
+        });
+        cglibProducer.saleProduct(12000f);
+    }
+}
+```
+
+cglib 动态代理需要引入坐标
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib</artifactId>
+        <version>3.1</version>
+    </dependency>
+</dependencies>
+```
