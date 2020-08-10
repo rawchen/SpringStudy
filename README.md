@@ -1300,9 +1300,9 @@ b、运行阶段(spring框架完成的)
 
 ## **03_03springAOP**
 
-**记录日志**
+**记录日志**：通过aop编写记录日志的工具类Logger，计划让其在切入点方法之前执行打印日志方法printLog()（切入点方法就是业务层方法）
 
-通过aop编写记录日志的工具类，计划让其在切入点方法之前执行（切入点方法就是业务层方法）
+bean.xml
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1348,3 +1348,22 @@ b、运行阶段(spring框架完成的)
 </beans>
 ```
 
+pom.xml
+
+```xml
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>5.0.2.RELEASE</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjweaver</artifactId>
+        <version>1.8.7</version>
+    </dependency>
+
+</dependencies>
+```
