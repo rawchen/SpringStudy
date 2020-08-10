@@ -1302,6 +1302,30 @@ b、运行阶段(spring框架完成的)
 
 **记录日志**：通过aop编写记录日志的工具类Logger，计划让其在切入点方法之前执行打印日志方法printLog()（切入点方法就是业务层方法）
 
+**Spring中基于XML的AOP配置步骤：**
+
+1. 把通知的Bean也交给Spring来管理
+
+2. 使用 **aop:config** 标签表明开始AOP的配置
+
+3. 使用 **aop:aspect** 标签表明配置切面
+
+   * id属性：是给切面提供一个唯一标识
+
+   * ref属性：是指定通知类bean的Id。
+
+4. 在 **aop:aspect** 标签内部使用对应的标签来配置通知的类型
+           我们现在的实例是让printLog方法在切入点方法执行之前执行，所以是前置通知
+           **aop:before**  表示配置前置通知
+                   **method** 属性：用于指定Logger类中哪个方法是前置通知
+                   **pointcut** 属性：用于指定切入点表达式，该表达式含义指的是对业务层中哪些方法增强
+           切入点的表达式写法：
+                   关键字：**execution(表达式)**
+                   表达式：
+                           **访问修饰符 返回值 包名.包名...类名.方法名(参数列表)**
+                   标准表达式写法：
+                   **public void com.yoyling.service.impl.AccountServiceImpl.saveAccount()**
+
 bean.xml
 
 ```xml
@@ -1316,24 +1340,6 @@ bean.xml
     <!-- 配置Spring的IOC，把service对象配置进来 -->
     <bean id="accountService" class="com.yoyling.service.impl.AccountServiceImpl"></bean>
 
-    <!-- Spring中基于XML的AOP配置步骤
-        1.把通知的Bean也交给Spring来管理
-        2.使用aop:config标签表明开始AOP的配置
-        3.使用aop:aspect标签表明配置切面
-            id属性：是给切面提供一个唯一标识
-            ref属性：是指定通知类bean的Id。
-        4.在aop:aspect标签内部使用对应的标签来配置通知的类型
-            我们现在的实例是让printLog方法在切入点方法执行之前执行，所以是前置通知
-            aop:before  表示配置前置通知
-                method属性：用于指定Logger类中哪个方法是前置通知
-                pointcut属性：用于指定切入点表达式，该表达式含义指的是对业务层中哪些方法增强
-          切入点的表达式写法：
-            关键字：execution(表达式)
-            表达式：
-                访问修饰符 返回值 包名.包名...类名.方法名(参数列表)
-            标准表达式写法
-                public void com.yoyling.service.impl.AccountServiceImpl.saveAccount()
-    -->
     <!-- 配置Logger类 -->
     <bean id="logger" class="com.yoyling.utils.Logger"></bean>
 
