@@ -44,10 +44,6 @@
                 可以使用..有无参数均可，参数类型可任意
             全通配写法：
                 * *..*.*(..)
-
-            实际开发中切入点表达式的通常写法：
-                切到业务层实现类下的所有方法
-                    * com.yoyling.service.impl.*.*(..)
     -->
     <!-- 配置Logger类 -->
     <bean id="logger" class="com.yoyling.utils.Logger"></bean>
