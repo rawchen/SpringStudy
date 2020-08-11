@@ -1542,7 +1542,7 @@ public Object aroundPrintLog(ProceedingJoinPoint pjp) {
 
 **@Before("pt1()")**    **@AfterReturning("pt1()")**    **@AfterThrowing("pt1()")**    **@After("pt1()")**    **@Around("pt1()")**
 
-**@Aspect**    **@Pointcut("execution(* com.yoyling.service.impl.*.*(..))")**
+**@Aspect**    **@Pointcut("execution()")**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1628,4 +1628,3 @@ public class Logger {
     }
 }
 ```
-
