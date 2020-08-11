@@ -1298,7 +1298,7 @@ b、运行阶段(spring框架完成的)
 
 * Spring框架监控切入点方法的执行。一旦监控到切入点方法被运行，使用代理机制，动态创建目标对象的代理对象，根据通知类别，在代理对象的对应位置，将通知对应的功能织入，完成完整的代码逻辑运行。
 
-## **03_03springAOP**
+## 03_03springAOP
 
 **记录日志**：通过aop编写记录日志的工具类Logger，计划让其在切入点方法之前执行打印日志方法printLog()（切入点方法就是业务层方法）
 
@@ -1438,5 +1438,99 @@ void com.yoyling.service.impl.AccountServiceImpl.saveAccount()
 
 ```
 * com.yoyling.service.impl.*.*(..)
+```
+
+## 03_04adviceType
+
+4种常用的通知类型：
+
+* **前置aop:before****
+* **后置aop:after-returning**
+
+* **异常aop:after-throwing**
+
+* **最终aop:after**
+
+配置切入点表达式 **id**属性用于指定表达式的唯一标志。**expression**属性用于指定表达式内容
+
+* 此标签写在**aop:aspect**标签内部只能当前切面使用。
+
+* 它还可以写在**aop:aspect**外面，此时就变成了所有切面可用。
+
+spring约束**aop:pointcut**标签必须出现在切面之前。
+
+```xml
+<!-- 配置AOP -->
+<aop:config>
+    <aop:pointcut id="pt1" expression="execution(* com.yoyling.service.impl.*.*(..))"/>
+
+    <!-- 配置切面 -->
+    <aop:aspect id="logAdvice" ref="logger">
+        <!-- 配置前置通知：在切入点方法执行之前执行 -->
+        <aop:before method="beforePrintLog" pointcut-ref="pt1"></aop:before>
+
+        <!-- 前置后置通知：在切入点方法正常执行之后执行。它和异常通知永远只能执行一个 -->
+        <aop:after-returning method="afterReturningPrintLog" pointcut-ref="pt1"></aop:after-returning>
+
+        <!-- 配置异常通知：在切入点方法执行产生异常之后执行。它和后置通知永远只能执行一个 -->
+        <aop:after-throwing method="afterThrowingPrintLog" pointcut-ref="pt1"></aop:after-throwing>
+
+        <!-- 配置最终通知：无论切入点方法是否正常执行它都会在其后面执行 -->
+        <aop:after method="afterPrintLog" pointcut-ref="pt1"></aop:after>
+    </aop:aspect>
+</aop:config>
+```
+
+**环绕通知：**
+
+**问题：**
+
+当我们配置了环绕通知之后，切入点方法没有执行，而通知方法执行了。
+
+**分析：**
+
+通过对比动态代理中的环绕通知代码，发现**动态代理中的环绕通知**有**明确的切入点方法调用**，而我们的代码中没有。
+
+**解决：**
+
+Spring框架为我们提供了一个接口**ProceedingJoinPoint**。该接口有一个方法**proceed()**，此方法就相当于明确调用切入点的方法。
+
+该接口可以作为环绕通知的方法参数，在程序执行时spring框架会为我们提供该接口实现类供我们使用。
+
+**spring中的环绕通知：**
+它是spring框架为我们提供的一种可以在代码中手动控制增强方法何时执行的方式
+
+```xml
+<aop:config>
+    <aop:pointcut id="pt1" expression="execution(* com.yoyling.service.impl.*.*(..))"/>
+
+        <!-- 配置切面 -->
+        <aop:aspect id="logAdvice" ref="logger">
+          
+        <!-- 配置环绕通知 详细的注释请看Logger类中 -->
+        <aop:around method="aroundPrintLog" pointcut-ref="pt1"></aop:around>
+            
+    </aop:aspect>
+</aop:config>
+```
+
+**Logger.java**
+
+```java
+public Object aroundPrintLog(ProceedingJoinPoint pjp) {
+    Object rtValue = null;
+    try {
+        Object[] args = pjp.getArgs();//得到方法执行所须的参数
+        System.out.println("Logger类中的aroundPrintLog方法开始记录日志..前置");
+        rtValue = pjp.proceed(args);//明确调用业务层方法（切入点方法）
+        System.out.println("Logger类中的aroundPrintLog方法开始记录日志..后置");
+        return rtValue;
+    } catch (Throwable throwable) {
+        System.out.println("Logger类中的aroundPrintLog方法开始记录日志..异常");
+        throw new RuntimeException(throwable);
+    } finally {
+        System.out.println("Logger类中的aroundPrintLog方法开始记录日志..最终");
+    }
+}
 ```
 
