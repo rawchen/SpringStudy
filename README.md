@@ -1534,3 +1534,98 @@ public Object aroundPrintLog(ProceedingJoinPoint pjp) {
 }
 ```
 
+# 03_05annotationAOP
+
+基于注解的AOP：
+
+**@Service("accountService")    @Component("logger")**
+
+**@Before("pt1()")**    **@AfterReturning("pt1()")**    **@AfterThrowing("pt1()")**    **@After("pt1()")**    **@Around("pt1()")**
+
+**@Aspect**    **@Pointcut("execution(* com.yoyling.service.impl.*.*(..))")**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 配置spring创建容器时要扫描的包 -->
+    <context:component-scan base-package="com.yoyling"></context:component-scan>
+
+
+    <!-- 配置spring开启注解AOP的支持 -->
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+</beans>
+```
+
+**Logger.java**
+
+```java
+package com.yoyling.utils;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
+import org.springframework.stereotype.Component;
+
+/**
+ * 用于记录日志的工具类，它提供了公共的代码
+ */
+@Component("logger")
+@Aspect//表示当前类是一个切面
+public class Logger {
+
+    @Pointcut("execution(* com.yoyling.service.impl.*.*(..))")
+    private void pt1(){}
+
+//    @Before("pt1()")
+    public void beforePrintLog() {
+        System.out.println("前置通知Logger类中的beforePrintLog方法开始记录日志");
+    }
+
+//    @AfterReturning("pt1()")
+    public void afterReturningPrintLog() {
+        System.out.println("后置通知Logger类中的afterReturningPrintLog方法开始记录日志");
+    }
+
+//    @AfterThrowing("pt1()")
+    public void afterThrowingPrintLog() {
+        System.out.println("异常通知Logger类中的afterThrowingPrintLog方法开始记录日志");
+    }
+
+//    @After("pt1()")
+    public void afterPrintLog() {
+        System.out.println("最终通知Logger类中的afterPrintLog方法开始记录日志");
+    }
+
+    @Around("pt1()")
+    public Object aroundPrintLog(ProceedingJoinPoint pjp) {
+        Object rtValue = null;
+        try {
+            Object[] args = pjp.getArgs();//得到方法执行所须的参数
+
+            System.out.println("Logger类中的aroundPrintLog方法开始记录日志..前置");
+
+            rtValue = pjp.proceed(args);//明确调用业务层方法（切入点方法）
+
+            System.out.println("Logger类中的aroundPrintLog方法开始记录日志..后置");
+
+            return rtValue;
+        } catch (Throwable throwable) {
+
+            System.out.println("Logger类中的aroundPrintLog方法开始记录日志..异常");
+            throw new RuntimeException(throwable);
+        } finally {
+            System.out.println("Logger类中的aroundPrintLog方法开始记录日志..最终");
+        }
+    }
+}
+```
+
