@@ -1315,16 +1315,16 @@ b、运行阶段(spring框架完成的)
    * ref属性：是指定通知类bean的Id。
 
 4. 在 **aop:aspect** 标签内部使用对应的标签来配置通知的类型
-           我们现在的实例是让printLog方法在切入点方法执行之前执行，所以是前置通知
-           **aop:before**  表示配置前置通知
-                   **method** 属性：用于指定Logger类中哪个方法是前置通知
-                   **pointcut** 属性：用于指定切入点表达式，该表达式含义指的是对业务层中哪些方法增强
-           切入点的表达式写法：
-                   关键字：**execution(表达式)**
-                   表达式：
-                           **访问修饰符 返回值 包名.包名...类名.方法名(参数列表)**
-                   标准表达式写法：
-                   **public void com.yoyling.service.impl.AccountServiceImpl.saveAccount()**
+       我们现在的实例是让printLog方法在切入点方法执行之前执行，所以是前置通知
+       **aop:before**  表示配置前置通知
+               **method** 属性：用于指定Logger类中哪个方法是前置通知
+               **pointcut** 属性：用于指定切入点表达式，该表达式含义指的是对业务层中哪些方法增强
+       切入点的表达式写法：
+               关键字：**execution(表达式)**
+               表达式：
+                       **访问修饰符 返回值 包名.包名...类名.方法名(参数列表)**
+               标准表达式写法：
+               **public void com.yoyling.service.impl.AccountServiceImpl.saveAccount()**
 
 bean.xml
 
@@ -1373,3 +1373,70 @@ pom.xml
 
 </dependencies>
 ```
+
+**切入点表达式的通用写法：**
+
+访问修饰符 返回值 包名.包名...类名.方法名(参数列表)
+
+标准表达式写法：
+
+```Java
+public void com.yoyling.service.impl.AccountServiceImpl.saveAccount()
+```
+
+访问修饰符可省略
+
+```Java
+void com.yoyling.service.impl.AccountServiceImpl.saveAccount()
+```
+
+返回值可以使用通配符，表示任意返回值
+
+```Java
+* com.yoyling.service.impl.AccountServiceImpl.saveAccount()
+```
+
+包名可以使用通配符，表示任意包，但是有几级包就写几个 *.
+
+```Java
+* *.*.*.*.AccountServiceImpl.saveAccount()
+```
+
+包名可使用..当前包及其子包
+
+```
+* *..AccountServiceImpl.saveAccount()
+```
+
+类名和方法名都可以使用*来实现通配
+
+```Java
+* *..*.*()
+```
+
+**参数列表：**
+
+* 可以写基本类型：
+
+  基本类型直接写名称   **int**
+
+  引用类型写包名.类名  **java.lang.String**
+
+- 可以使用通配符表示任意类型但必须有参数
+
+* 可以使用..有无参数均可，参数类型可任意
+
+**全通配写法：**
+
+```Java
+* *..*.*(..)
+```
+
+**实际开发中切入点表达式的通常写法：**
+
+* 切到业务层实现类下的所有方法
+
+```
+* com.yoyling.service.impl.*.*(..)
+```
+
