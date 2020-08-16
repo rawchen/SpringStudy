@@ -1067,7 +1067,7 @@ public class AccountServiceImpl_OLD implements AccountService {
 
 
 
-# 03_02proxy
+## 03_02proxy
 
 最后在bean.xml中注入各个类带有set方法的对象到相应的bean中。我们可以发现，servlceImpl中代码冗余了，如果出现其他任意FindAll()、deleteAccount()方法，则要多次写入以上5个事件，且如果事务方法名改变则需要重构所有service层类文件相同的方法。
 
@@ -1534,7 +1534,7 @@ public Object aroundPrintLog(ProceedingJoinPoint pjp) {
 }
 ```
 
-# 03_05annotationAOP
+## 03_05annotationAOP
 
 基于注解的AOP：
 
@@ -1629,5 +1629,117 @@ public class Logger {
 }
 ```
 
-# 04_01jdbcTemplate
-测试内容
+
+
+## 04_01jdbcTemplate
+
+以前的学的JDBC原始写法简单插入数据库数据：要写加载数据库驱动、获取连接、执行语句对象、关闭数据库连接。
+
+现在使用spring内置的数据源和JdbcTemplate写法可简化为：
+
+```Java
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+/**
+ * JdbcTemplate的最基本用法
+ */
+public class JdbcTemplateDemo1 {
+    public static void main(String[] args) {
+        //准备数据源：spring的内置数据源
+        DriverManagerDataSource ds = new DriverManagerDataSource();
+        ds.setDriverClassName("com.mysql.jdbc.Driver");
+        ds.setUrl("jdbc:mysql://localhost:3306/springtest");
+        ds.setUsername("root");
+        ds.setPassword("root");
+
+        //1.创建对象JdbcTemplate
+        JdbcTemplate jt = new JdbcTemplate();
+        //给jt设置数据源
+        jt.setDataSource(ds);
+        //2.执行操作
+        jt.execute("insert into account(name,money)values('ccc',1000)");
+    }
+}
+```
+
+以上耦合太多，且配置写死了。下面使用ioc容器配置：
+
+```xml
+<!-- 配置JdbcTemplate -->
+<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+   <property name="dataSource" ref="dataSource"></property>
+</bean>
+
+<!-- 配置数据源 -->
+<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+   <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+   <property name="url" value="jdbc:mysql://localhost:3306/springtest"></property>
+   <property name="username" value="root"></property>
+   <property name="password" value="root"></property>
+</bean>
+```
+
+```Java
+//1.获取容器
+ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
+//2.获取对象
+JdbcTemplate jt = ac.getBean("jdbcTemplate", JdbcTemplate.class);
+//3.执行操作
+jt.execute("insert into account(name,money)values('ddd',222)");
+```
+
+**JdbcTemplate的CRUD：**
+
+```Java
+//保存
+jt.update("insert into account(name,money)values(?,?)","eee",3333f);
+//更新
+jt.update("update account set name = ?,money = ? where id = ?","test",4567f,7);
+//删除
+jt.update("delete from account where id = ?",8);
+//查询所有
+List<Account> accounts = jt.query("select * from account where money > ?",new BeanPropertyRowMapper<Account>(Account.class),1000f);
+//查询一个
+List<Account> accounts = jt.query("select * from account where id = ?",new BeanPropertyRowMapper<Account>(Account.class),1);
+System.out.println(accounts.isEmpty()?"没有内容":accounts.get(0));
+//查询返回一行一列（使用聚合函数，但是不加group by）
+Long count = jt.queryForObject("select count(*) from account where money > ?",Long.class,1000f);
+```
+
+**Spring之JdbcDaoSupport的使用：**
+
+JdbcDaoSupport是Spring内置的一个Dao层的基类，其内部定义了JdbcTemplate的set方法，这样我们自己的dao类只需要继承JdbcDaoSupport类，就可以省略JdbcTemplate的set方法书写了，通过查看源码你会发现，该方法是final修饰的。还提供了注入数据库连接池的set方法。
+
+```Java
+public final void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+	this.jdbcTemplate = jdbcTemplate;
+	initTemplateConfig();
+}
+public final void setDataSource(DataSource dataSource) {
+	if (this.jdbcTemplate == null || dataSource != this.jdbcTemplate.getDataSource()) {
+		this.jdbcTemplate = createJdbcTemplate(dataSource);
+		initTemplateConfig();
+	}
+}
+```
+
+**说白了，JdbcDaoSupport就是为了简化我们dao类有关JdbcTemplate的注入的相关工作量。**下面是JdbcDaoSupport的使用：
+
+```Java
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import blog.csdn.net.mchenys.domain.Account;
+
+//dao层，继承JdbcDaoSupport 
+public class AccountDaoImpl extends JdbcDaoSupport implements AccountDao {
+	@Override
+	public void save(Account account) {
+		// 从父类获取jdbcTemplate
+		getJdbcTemplate().update("insert into t_account values(null,?,?)", 
+				account.getName(), account.getMoney());
+	}
+}
+```
+
+## 04_02accountAopTx
+
