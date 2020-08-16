@@ -1226,7 +1226,7 @@ cglib 动态代理需要引入坐标：
 
 
 
-## AOP
+### AOP
 
 Aspect Oriented Programming，面向切面编程。通过预编译方式和运行期动态代理实现程序功能的统一维护的一种技术。是OOP的延续，软件开发的热点，也是Spring框架中的一个重要内容，是函数式编程的一种衍生范例。利用AOP可以对业务逻辑各部分进行隔离。使业务逻辑各部分之间的耦合度降低。提高程序重用性，提高开发效率。
 
@@ -1742,4 +1742,3 @@ public class AccountDaoImpl extends JdbcDaoSupport implements AccountDao {
 ```
 
 ## 04_02accountAopTx
-
