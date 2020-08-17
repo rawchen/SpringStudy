@@ -37,6 +37,6 @@ public class AccountDaoImpl2 implements AccountDao {
 
     @Override
     public void updateAccount(Account account) {
-        jdbcTemplate.update("update account set name = ?,money = ? where id = ?", account.getId(), account.getMoney(), account.getId());
+        jdbcTemplate.update("update account set name = ?,money = ? where id = ?", account.getName(), account.getMoney(), account.getId());
     }
 }

@@ -3,8 +3,7 @@ package com.yoyling.dao.impl;
 import com.yoyling.dao.AccountDao;
 import com.yoyling.domain.Account;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-//import org.springframework.jdbc.core.support.JdbcDaoSupport;
-
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import java.util.List;
 
 /**
