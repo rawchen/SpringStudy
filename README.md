@@ -1741,4 +1741,122 @@ public class AccountDaoImpl extends JdbcDaoSupport implements AccountDao {
 }
 ```
 
-## 04_02accountAopTx
+## 04_02accountAopTransactionXml
+
+之前转账的问题基于XML配置文件的AOP实现事务控制
+
+## 04_03accountAopTransactionAnnotation
+
+之前转账的问题基于Annotation注解的AOP实现事务控制
+
+**不配置环绕通知的情况下报错：**
+
+com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException: **Can't call rollback when autocommit=true**
+
+是因为spring后置通知和最终通知的顺序与xml配置下实现AOP功能的顺序有些出入。正常返回的执行顺序应该是：
+
+环绕前置—>普通前置—>目标方法执行—>环绕后置—>环绕最终—>普通后置—>普通最终
+
+环绕通知的顺序是正常的，而普通的后置通知和最终通知顺序不对。因此：
+
+**如果在省时省力且对顺序无要求的情况下使用注解，在要求顺序的情况下那就得使用xml配置或者使用环绕通知，这是最正确的。**
+
+**环绕通知：具体参考：03_04adviceType**
+
+```Java
+package com.yoyling.utils;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.sql.SQLException;
+
+/**
+ * 和事务管理相关的工具类，它包含了开启事务、提交事务、回滚事务和释放事务
+ */
+@Component("txManager")
+@Aspect
+public class TransactionManager {
+
+    @Autowired
+    private ConnectionUtils connectionUtils;
+
+    @Pointcut("execution(* com.yoyling.service.impl.*.*(..))")
+    private void pt1(){}
+
+    /**
+     * 开启事务
+     */
+    public void beginTransaction() {
+        try {
+            connectionUtils.getThreadConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 提交事务
+     */
+    public void commit() {
+        try {
+            connectionUtils.getThreadConnection().commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 回滚事务
+     */
+    public void rollback() {
+        try {
+            connectionUtils.getThreadConnection().rollback();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 释放连接
+     */
+    public void release() {
+        try {
+            connectionUtils.getThreadConnection().close();//还回连接池中
+            connectionUtils.removeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Around("pt1()")
+    public Object aroundAdvice(ProceedingJoinPoint pjp) {
+        Object rtValue =null;
+        try {
+            //1.获取参数
+            Object[] args = pjp.getArgs();
+            //2.开启事务
+            this.beginTransaction();
+            //3.执行方法
+            rtValue =  pjp.proceed(args);
+            //4.提交事务
+            this.commit();
+            //返回结果
+            return rtValue;
+        } catch (Throwable e) {
+            //5.回滚事务
+            this.rollback();
+            throw new RuntimeException(e);
+        } finally {
+            //6.释放资源
+            this.release();
+        }
+    }
+}
+```
+
+## 04_04transaction
