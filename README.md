@@ -1873,7 +1873,7 @@ public class TransactionManager {
 
 基于XML的声明式事务控制
 
- **spring中基XML的声明式事务控制配置步骤：**
+ **spring中基于XML的声明式事务控制配置步骤：**
 
 1. 配置事务管理器
 
@@ -1956,3 +1956,159 @@ public class TransactionManager {
 ## 04_06transactionAnnotation
 
 基于注解的声明式事务控制
+
+spring中基于注解的声明式事务控制配置步骤
+
+1. 配置事务管理器
+2. 开启spring对注解事务的支持
+3. 在需要事务支持的地方使用@Transactional注解
+
+```xml
+<!-- 配置事务管理器 -->
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+   <property name="dataSource" ref="dataSource"></property>
+</bean>
+
+<!-- 开启spring对注解事务的支持 -->
+<tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
+```
+
+```Java
+@Service("accountService")
+@Transactional(propagation = Propagation.SUPPORTS,readOnly = true)//只读型事务的配置
+public class AccountServiceImpl implements AccountService {
+    @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
+    @Override
+    //需要的是读写型事务配置
+    public void transfer(String sourceName, String targetName, Float money) {}
+}
+```
+
+## day_04_07annotation_tx_withoutxml
+
+基于纯注解的声明式事务控制
+
+**测试类：AccountServiceTest.java**
+
+```Java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = SpringConfiguration.class)
+public class AccountServiceTest {
+
+    @Autowired
+    private AccountService as;
+
+    @Test
+    public void testTransfer() {
+        as.transfer("aaa","bbb",100f);
+    }
+}
+```
+
+**spring配置类：SpringConfiguration.java**
+
+```Java
+@Configuration
+@ComponentScan("com.yoyling")
+@Import({JdbcConfig.class,TransactionConfig.class})
+@PropertySource("jdbcConfig.properties")
+@EnableTransactionManagement
+public class SpringConfiguration {
+}
+```
+
+**和连接数据库相关的配置类：JdbcConfig.java**
+
+```Java
+public class JdbcConfig {
+
+    @Value("${jdbc.driver}")
+    private String driver;
+
+    @Value("${jdbc.url}")
+    private String url;
+
+    @Value("${jdbc.username}")
+    private String username;
+
+    @Value("${jdbc.password}")
+    private String password;
+
+    /**
+     * 创建JdbcTemplate对象
+     * @param dataSource
+     * @return
+     */
+    @Bean(name = "jdbcTemplate")
+    public JdbcTemplate createJdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+
+    /**
+     * 创建数据源对象
+     * @return
+     */
+    @Bean(name = "dataSource")
+    public DataSource createDateSource() {
+        DriverManagerDataSource ds = new DriverManagerDataSource();
+        ds.setDriverClassName(driver);
+        ds.setUrl(url);
+        ds.setUsername(username);
+        ds.setPassword(password);
+        return ds;
+    }
+}
+```
+
+和事务相关的配置类：TransactionConfig.java
+
+```Java
+public class TransactionConfig {
+    /**
+     * 用于创建事务管理器对象
+     * @param dataSource
+     * @return
+     */
+    @Bean(name = "transactionManager")
+    public PlatformTransactionManager createTransactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+}
+```
+
+**jdbcConfig.properties**
+
+```properties
+jdbc.driver = com.mysql.jdbc.Driver
+jdbc.url = jdbc:mysql://localhost:3306/springtest
+jdbc.username = root
+jdbc.password = root
+```
+
+**service实现类**
+
+```Java
+@Transactional(propagation = Propagation.SUPPORTS,readOnly = true)
+```
+
+## 04_08accountTransaction
+
+编程式事务控制（少用）
+
+通过前面的示例可以发现，事务管理方式很容易理解，代码中显式调用**beginTransaction()**、**commit()**、**rollback()**。或者通过 Spring 提供的事务管理 API，将事务操作委托给底层的持久化框架来执行。但是事务管理的代码散落在业务逻辑代码中，破坏了原有代码的条理性，并且每一个业务方法都包含了类似的启动事务、提交/回滚事务的样板代码。因此spring又提供了编程式事务管理。
+
+**TransactionTemplate** 
+
+TransactionTemplate 的 execute() 方法有一个 **TransactionCallback** 类型的参数，该接口中定义了一个 **doInTransaction()** 方法，通常我们以**匿名内部类**的方式实现 TransactionCallback 接口，并在其 doInTransaction() 方法中书写业务逻辑代码。这里可以使用默认的事务提交和回滚规则，这样在业务代码中就不需要显式调用任何事务管理的 API。
+
+```java
+public Account findAccountById(Integer accountId) {
+    return transactionTemplate.execute(new TransactionCallback<Account>() {
+        public Account doInTransaction(TransactionStatus status) {
+            return accountDao.findAccountById(accountId);
+        }
+    });
+}
+```
+
+也能看出虽然spring提供的 TransactionTemplate 简化了事务控制，但还是使得业务层代码重复。因此，一般开发事务控制使用声明式的比较多。
