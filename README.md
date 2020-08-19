@@ -1404,7 +1404,7 @@ void com.yoyling.service.impl.AccountServiceImpl.saveAccount()
 
 包名可使用..当前包及其子包
 
-```
+```Java
 * *..AccountServiceImpl.saveAccount()
 ```
 
