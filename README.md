@@ -101,6 +101,24 @@
   * 第一步：使用反射来创建对象，而避免使用new关键字。
   * 第二步：通过读取配置文件来获取要创建的对象全限定类名
 
+**接下来的Spring学习数据库都为springtest，表只有一个为account。**
+
+springtest库 -> account表
+
+```SQL
+create table account(
+	id int primary key auto_increment,
+	name varchar(40),
+	money float
+)character set utf8 collate utf8_general_ci;
+
+insert into account(name,money) values('aaa',1000);
+insert into account(name,money) values('bbb',1000);
+insert into account(name,money) values('ccc',1000);
+```
+
+下面演示了 **JDBC** 查询数据库数据的一般步骤。
+
 ```Java
 public static void main(String[] args) throws  Exception{
     //1.注册驱动
@@ -210,20 +228,13 @@ accountDao=com.yoyling.dao.impl.AccountDaoImpl
    ```Java
    IAccountService as = (IAccountService)ac.getBean("accountService");
    IAccountDao adao = ac.getBean("accountDao",IAccountDao.class);
-   ```
-
-```
    
---------------------BeanFactory-----------------------
-   
-​```Java
+   --------------------BeanFactory-----------------------
+       
    Resource resource = new ClassPathResource("bean.xml");
-BeanFactory beanFactory = new XmlBeanFactory(resource);
+   BeanFactory beanFactory = new XmlBeanFactory(resource);
    IAccountService as = (IAccountService)beanFactory.getBean("accountService");
-```
-
-   
-
+   ```
 
 * ApplicationContext的三个常用实现类
 
