@@ -28,7 +28,7 @@
 		<property name="password" value="root"></property>
 	</bean>
 
-	<!-- spring中基XML的声明式事务控制配置步骤
+	<!-- spring中基于XML的声明式事务控制配置步骤
 		1.配置事务管理器
 		2.配置事务的通知
 			此时需要导入事务的约束 tx的名称空间和约束，同时也需要aop的
